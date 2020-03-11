@@ -25,24 +25,64 @@ namespace gnss_bridge
     {
 
         Geolocator myGeolocator;
+        int iterator = 0;
 
         public MainPage()
         {
             this.InitializeComponent();
-
-            myGeolocator = new Geolocator() { DesiredAccuracy = PositionAccuracy.Default };
-            myGeolocator.StatusChanged += GetGeoPosUpdated;
-
-            var geoposAsync = myGeolocator.GetGeopositionAsync();
-            geoposAsync.Completed = GetGeoPosCompleted;            
-
+            getAccStatus();
         }
 
-        private async void GetGeoPosUpdated(Geolocator sender, StatusChangedEventArgs changeEvent)
+        private async void getAccStatus()
+        {
+            var accesStatus = await Geolocator.RequestAccessAsync();
+
+            switch (accesStatus)
+            {
+                case GeolocationAccessStatus.Allowed:
+                    myGeolocator = new Geolocator() { ReportInterval = 3000 };
+                    myGeolocator.StatusChanged += getGeo_StatusChange;
+                    myGeolocator.PositionChanged += getGeo_PositionChange;
+                    txtLineState.Text = "Waiting for update...";
+                    break;
+                case GeolocationAccessStatus.Denied:
+                    txtLineState.Text = "Access to location is denied.";
+                    bool result = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+                    break;
+                case GeolocationAccessStatus.Unspecified:
+                    txtLineState.Text = "Unspecificed error!";
+                    break;
+            }         
+        }
+
+        private async void getGeo_PositionChange(Geolocator sender, PositionChangedEventArgs evtPostition)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                switch (changeEvent.Status)
+                txtLineState.Text = "Location updated.";
+                iterator += 1;                
+
+                txtLineRes1.Text = evtPostition.Position.Coordinate.Latitude.ToString();
+                txtLineRes2.Text = evtPostition.Position.Coordinate.Longitude.ToString();
+                txtLineRes3.Text = evtPostition.Position.Coordinate.Accuracy.ToString();
+                txtLineRes4.Text = iterator.ToString();                
+
+                ListViewItem Item = new ListViewItem();
+                TextBlock myText = new TextBlock();
+                String stateData = String.Format("Latitude: {0} degrees. \nLongitude: {1} degrees. \nAccuracy: {2} meters.",
+                        evtPostition.Position.Coordinate.Latitude, evtPostition.Position.Coordinate.Longitude, evtPostition.Position.Coordinate.Accuracy);
+
+                myText.Text = stateData;
+                Item.Content = myText;
+                cbView.Items.Add(Item);
+            });
+        }
+
+        private async void getGeo_StatusChange(Geolocator sender, StatusChangedEventArgs evtStatus)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                switch (evtStatus.Status)
                 {
                     case PositionStatus.Ready:
                         txtLineState.Text = "Location platform is ready.";
@@ -54,7 +94,7 @@ namespace gnss_bridge
                         txtLineState.Text = "Not able to determine the location.";
                         break;
                     case PositionStatus.Disabled:
-                        txtLineState.Text = "Access to location is denied.";
+                        txtLineState.Text = "Access to location is denied.";                        
                         break;
                     case PositionStatus.NotInitialized:
                         txtLineState.Text = "No request for location is made yet.";
@@ -66,33 +106,8 @@ namespace gnss_bridge
                         txtLineState.Text = "Unknown";
                         break;
                 }
-            });
-            
-            //throw new NotImplementedException();
-        }
-
-        public async void showResult(String resultStr)
-        {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                txtLineRes.Text = resultStr;
-            });            
-        }
-
-        private void GetGeoPosCompleted(IAsyncOperation<Geoposition> asyncInfo, AsyncStatus asyncStatus)
-        {
-            switch(asyncStatus)
-            {
-                case AsyncStatus.Completed:
-                    var res = asyncInfo.GetResults();
-                    var pos = res.Coordinate.Point.Position;                    
-                    showResult (String.Format("Latitude: {0} degrees \nLongitude: {1} degrees \nAccuracy: {2} meters", 
-                        pos.Latitude, pos.Longitude, res.Coordinate.Accuracy));
-                    break;
-                default:
-                    showResult (myGeolocator.LocationStatus.ToString());
-                    break;
-            }
+            });           
+          
         }
 
     }

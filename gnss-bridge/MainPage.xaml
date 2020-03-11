@@ -2,15 +2,37 @@
     x:Class="gnss_bridge.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:gnss_bridge"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" Text="GNSS Data Bridge" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="20"/>
-        <TextBlock x:Name="txtLineState" HorizontalAlignment="Left" Margin="10,35,0,0" Text="Getting the status..." TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock x:Name="txtLineRes" HorizontalAlignment="Left" Margin="10,60,0,0" Text="Please Wait..." TextWrapping="Wrap" VerticalAlignment="Top"/>        
+    <Grid Margin="10,10,10,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="txtCaption" Text="GNSS Data Bridge" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+        <TextBlock Text="Status" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Text="Longitude" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Text="Latitude" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="3" Grid.Column="0"/>
+        <TextBlock Text="Accuracy" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="4" Grid.Column="0"/>
+        <TextBlock Text="Reads" TextWrapping="Wrap" ManipulationMode="None"  FontWeight="Bold" Grid.Row="5" Grid.Column="0"/>
+        <TextBlock x:Name="txtLineState" Text="Getting the status..." Grid.Row="1" Grid.Column="1" />
+        <TextBlock x:Name="txtLineRes1" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="2" Grid.Column="1" />
+        <TextBlock x:Name="txtLineRes2" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="3" Grid.Column="1" />
+        <TextBlock x:Name="txtLineRes3" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="4" Grid.Column="1" />
+        <TextBlock x:Name="txtLineRes4" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="5"  Grid.Column="1"/>
+        <ListBox x:Name="cbView" ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Row="6"  Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,0"/>
+
     </Grid>
 </Page>
