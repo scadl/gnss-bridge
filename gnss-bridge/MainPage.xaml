@@ -9,7 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" Text="SCAD's GNSS Bridge" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="20"/>
-        <TextBlock x:Name="txtLineRes" HorizontalAlignment="Left" Margin="10,35,0,0" Text="Please Wait..." TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" Text="GNSS Data Bridge" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="20"/>
+        <TextBlock x:Name="txtLineState" HorizontalAlignment="Left" Margin="10,35,0,0" Text="Getting the status..." TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="txtLineRes" HorizontalAlignment="Left" Margin="10,60,0,0" Text="Please Wait..." TextWrapping="Wrap" VerticalAlignment="Top"/>        
     </Grid>
 </Page>

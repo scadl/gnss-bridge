@@ -16,12 +16,10 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Geolocation;
 using Windows.UI.Core;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace gnss_bridge
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
@@ -33,9 +31,44 @@ namespace gnss_bridge
             this.InitializeComponent();
 
             myGeolocator = new Geolocator() { DesiredAccuracy = PositionAccuracy.Default };
-            var geoposAsync = myGeolocator.GetGeopositionAsync();
-            geoposAsync.Completed = GetGeoPosCompleted;
+            myGeolocator.StatusChanged += GetGeoPosUpdated;
 
+            var geoposAsync = myGeolocator.GetGeopositionAsync();
+            geoposAsync.Completed = GetGeoPosCompleted;            
+
+        }
+
+        private async void GetGeoPosUpdated(Geolocator sender, StatusChangedEventArgs changeEvent)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                switch (changeEvent.Status)
+                {
+                    case PositionStatus.Ready:
+                        txtLineState.Text = "Location platform is ready.";
+                        break;
+                    case PositionStatus.Initializing:
+                        txtLineState.Text = "Location platform is attempting to obtain a position.";
+                        break;
+                    case PositionStatus.NoData:
+                        txtLineState.Text = "Not able to determine the location.";
+                        break;
+                    case PositionStatus.Disabled:
+                        txtLineState.Text = "Access to location is denied.";
+                        break;
+                    case PositionStatus.NotInitialized:
+                        txtLineState.Text = "No request for location is made yet.";
+                        break;
+                    case PositionStatus.NotAvailable:
+                        txtLineState.Text = "Location is not available on this version of the OS.";
+                        break;
+                    default:
+                        txtLineState.Text = "Unknown";
+                        break;
+                }
+            });
+            
+            //throw new NotImplementedException();
         }
 
         public async void showResult(String resultStr)
@@ -61,5 +94,6 @@ namespace gnss_bridge
                     break;
             }
         }
+
     }
 }
