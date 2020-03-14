@@ -20,19 +20,45 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="txtCaption" Text="GNSS Data Bridge" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
         <TextBlock Text="Status" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="1" Grid.Column="0"/>
-        <TextBlock Text="Longitude" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="2" Grid.Column="0"/>
-        <TextBlock Text="Latitude" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="3" Grid.Column="0"/>
+        <TextBlock Text="Latitude" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Text="Longitude" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="3" Grid.Column="0"/>
         <TextBlock Text="Accuracy" TextWrapping="Wrap" ManipulationMode="None" FontWeight="Bold" Grid.Row="4" Grid.Column="0"/>
         <TextBlock Text="Reads" TextWrapping="Wrap" ManipulationMode="None"  FontWeight="Bold" Grid.Row="5" Grid.Column="0"/>
-        <TextBlock x:Name="txtLineState" Text="Getting the status..." Grid.Row="1" Grid.Column="1" />
-        <TextBlock x:Name="txtLineRes1" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="2" Grid.Column="1" />
-        <TextBlock x:Name="txtLineRes2" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="3" Grid.Column="1" />
-        <TextBlock x:Name="txtLineRes3" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="4" Grid.Column="1" />
-        <TextBlock x:Name="txtLineRes4" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="5"  Grid.Column="1"/>
-        <ListBox x:Name="cbView" ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Row="6"  Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,0"/>
-
+        <TextBlock x:Name="txtLineState" Text="Getting the status..." Grid.Row="1" Grid.Column="1"  Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="txtLineRes1" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="txtLineRes2" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="txtLineRes3" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="txtLineRes4" Text=" - " TextWrapping="Wrap" ManipulationMode="None" Grid.Row="5"  Grid.Column="1" Grid.ColumnSpan="2"/>
+        <ListBox x:Name="cbView" ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Row="6"  Grid.Column="0" Grid.ColumnSpan="3" Margin="0,5,0,0" SelectionMode="Single" FocusVisualPrimaryThickness="1,2,2,2" Padding="3,0,0,0">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType = "ListBoxItem">
+                    <Setter Property="Padding" Value="0" />                    
+                    <Setter Property="Margin" Value="0"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <TextBlock Text="abc"/>
+            <TextBlock Text="def"/>
+        </ListBox>
+        <Grid Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Scan Interval" Grid.Row="0" Grid.Column="0"  TextWrapping="Wrap" ManipulationMode="None"  FontWeight="Bold" VerticalAlignment="Center"/>
+            <TextBlock x:Name="lblInterval" Grid.Row="0"  Grid.Column="0" Margin="0,0,0,0" Text="3 sec." HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <Slider x:Name="slInterval" Grid.Row="1" Grid.Column="0" Margin="0,0,0,0" Minimum="0" Maximum="60" Value="3" ValueChanged="slInterval_ValueChanged" />
+            <TextBlock Text="Port" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" TextWrapping="Wrap" ManipulationMode="None"  FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox x:Name="tbPort" Grid.Column="1" Grid.Row="1"  Margin="0,0,0,3" Text="COM8" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+        </Grid>
+        <Button x:Name="btnControl" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,0" Content="Run Scan" Width="auto" HorizontalAlignment="Stretch" Click="btnControl_Click" />
     </Grid>
 </Page>

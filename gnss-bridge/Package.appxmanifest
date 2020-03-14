@@ -44,8 +44,11 @@
   </Applications>
 
   <Capabilities>
-    <uap:Capability Name="chat"/>
     <DeviceCapability Name="location"/>
-    <DeviceCapability Name="proximity"/>
+    <DeviceCapability Name="serialCommunication">
+      <Device Id="any">
+        <Function Type="name:serialPort"/>
+      </Device>
+    </DeviceCapability>
   </Capabilities>
 </Package>
