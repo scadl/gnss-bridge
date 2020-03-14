@@ -8,14 +8,14 @@
 
   <Identity
     Name="92e8b459-3c8b-49f0-9e52-c713e0a664f2"
-    Publisher="CN=SCAD"
-    Version="1.0.0.0" />
+    Publisher="CN=SCADL"
+    Version="1.0.10.0" />
 
   <mp:PhoneIdentity PhoneProductId="92e8b459-3c8b-49f0-9e52-c713e0a664f2" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>gnss-bridge</DisplayName>
-    <PublisherDisplayName>SCAD</PublisherDisplayName>
+    <DisplayName>GNSS Data Bridge</DisplayName>
+    <PublisherDisplayName>SCADL</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,13 +32,11 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="gnss_bridge.App">
       <uap:VisualElements
-        DisplayName="gnss-bridge"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="gnss-bridge"
-        BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        DisplayName="GNSS Data Bridge"
+        Description="GNSS Data Bridge - is a lightweight application for Windows 10 16249 and up. It&apos;s main purpose is to get and process all ind of GNSS data from geolocation sensors and process it to NMEA standard, sending it to virtual or physical COM-port, connected to application or hardware navigator."
+        BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Square71x71Logo="Assets\SmallTile.png" Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png"/>
+        <uap:SplashScreen Image="Assets\SplashScreen.png"/>
       </uap:VisualElements>
     </Application>
   </Applications>

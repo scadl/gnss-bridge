@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 using System.IO.Ports;
 using Windows.Devices.Geolocation;
@@ -38,29 +28,40 @@ namespace gnss_bridge
         private async void GetCOM()
         {            
             outCOM = new SerialPort(tbPort.Text);
-            outCOM.Open();
+            
         }
 
         private async void getAccStatus()
         {
-            var accesStatus = await Geolocator.RequestAccessAsync();
-
-            switch (accesStatus)
+            try
             {
-                case GeolocationAccessStatus.Allowed:
-                    myGeolocator = new Geolocator() { ReportInterval = scanInterval };
-                    myGeolocator.StatusChanged += getGeo_StatusChange;
-                    myGeolocator.PositionChanged += getGeo_PositionChange;
-                    txtLineState.Text = "Waiting for update...";
-                    break;
-                case GeolocationAccessStatus.Denied:
-                    txtLineState.Text = "Access to location is denied.";
-                    bool result = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
-                    break;
-                case GeolocationAccessStatus.Unspecified:
-                    txtLineState.Text = "Unspecificed error!";
-                    break;
-            }         
+                var accesStatus = await Geolocator.RequestAccessAsync();
+                switch (accesStatus)
+                {
+                    case GeolocationAccessStatus.Allowed:
+                        myGeolocator = new Geolocator() { ReportInterval = scanInterval };
+                        myGeolocator.StatusChanged += getGeo_StatusChange;
+                        myGeolocator.PositionChanged += getGeo_PositionChange;
+                        txtLineState.Text = "Waiting for update...";
+                        break;
+                    case GeolocationAccessStatus.Denied:
+                        txtLineState.Text = "Access to location is denied.";
+                        bool result = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+                        break;
+                    case GeolocationAccessStatus.Unspecified:
+                        txtLineState.Text = "Unspecificed error!";
+                        break;
+                }
+                slInterval.IsEnabled = false;
+                btnControl.Content = "Stop Scan";
+            }
+            catch
+            {
+                txtLineState.Text = "Access to location is denied. Allow it, and try again.";
+                bool result = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+            }
+
+              
         }
 
         private static string getChecksum(string sentence)
@@ -83,6 +84,7 @@ namespace gnss_bridge
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                var timeStamp = DateTime.UtcNow;
                 txtLineState.Text = "Location updated.";
                 iterator += 1;                
 
@@ -90,12 +92,14 @@ namespace gnss_bridge
                 txtLineRes2.Text = evtPostition.Position.Coordinate.Point.Position.Longitude.ToString() + " degrees.";
                 txtLineRes3.Text = evtPostition.Position.Coordinate.Accuracy.ToString() + " meters.";
                 txtLineRes4.Text = iterator.ToString() + " times.";
+                txtLineRes5.Text = timeStamp.ToString("HH:mm:ss")+" "+ timeStamp.ToString("dd.MM.yy");
 
                 Thickness ZeroThin = new Thickness(0);
-                ListViewItem Item = new ListViewItem();
+                ListBoxItem Item = new ListBoxItem();
                 TextBlock myText = new TextBlock();
-                //String stateData = String.Format("Latitude: {0} degrees. \nLongitude: {1} degrees. \nAccuracy: {2} meters.",
-                //        evtPostition.Position.Coordinate.Point.Position.Latitude, evtPostition.Position.Coordinate.Point.Position.Longitude, evtPostition.Position.Coordinate.Accuracy);
+                String formData = String.Format("Latitude: {0}. Longitude: {1}. Accuracy: {2}m. Altitude: {3}m. Heading: {4}. Speed: {5}.\n",
+                        evtPostition.Position.Coordinate.Point.Position.Latitude, evtPostition.Position.Coordinate.Point.Position.Longitude, evtPostition.Position.Coordinate.Accuracy,
+                        evtPostition.Position.Coordinate.Point.Position.Altitude, evtPostition.Position.Coordinate.Heading, evtPostition.Position.Coordinate.Speed);
                                              
                 double lat = evtPostition.Position.Coordinate.Point.Position.Latitude;
                 double lon = evtPostition.Position.Coordinate.Point.Position.Longitude;
@@ -106,31 +110,31 @@ namespace gnss_bridge
 
                 string lonDir = (lon >= 0 ? "E" : "W");                
                 lon = Math.Abs(lon);
-                var lonMin = (lon % Math.Truncate(lon)) * 60;                
+                var lonMin = (lon % Math.Truncate(lon)) * 60;
 
-                var timeStamp = DateTime.UtcNow;
+                // Example of NMEA 0183 String:
+                // $GPRMC,125504.049,A,5542.2389,N,03741.6063,E,0.06,25.82,200906,,,*17
+                // https://ru.wikipedia.org/wiki/NMEA_0183#RMC-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B0_(%D1%87%D0%B0%D1%81%D1%82%D0%BD%D1%8B%D0%B9_%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80)
+                
                 stateData = String.Format("$GPRMC,{0},A,{2}{3},{4},{5}{6},{7},,,{1},,,",
                         timeStamp.ToString("hhmmss.sss"), timeStamp.ToString("ddMMyy"),
                         Math.Truncate(lat).ToString().PadLeft(2,'0'), latMin.ToString().PadLeft(2,'0'), latDir,
                         Math.Truncate(lon).ToString().PadLeft(3,'0'), lonMin.ToString().PadLeft(2,'0'), lonDir);
 
-                myText.Text = stateData;
+                myText.Text = formData + stateData;
                 Item.Content = myText;
                 cbView.Items.Add(Item);
 
-                // What's available in classes?
-                //evtPostition.Position.Coordinate.Coordinate.Point.Position.Altitude;
-                //evtPostition.Position.Coordinate.Heading;
-                //evtPostition.Position.Coordinate.Speed
             });
 
-            // Example of NMEA 0183 String:
-            // $GPRMC,125504.049,A,5542.2389,N,03741.6063,E,0.06,25.82,200906,,,*17
-            // https://ru.wikipedia.org/wiki/NMEA_0183#RMC-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B0_(%D1%87%D0%B0%D1%81%D1%82%D0%BD%D1%8B%D0%B9_%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80)
-
-            //evtPostition.Position.Coordinate.Point.AltitudeReferenceSystem = new AltitudeReferenceSystem();
-                        
-            outCOM.WriteLine(stateData);
+            try
+            {
+                if (!outCOM.IsOpen)
+                    outCOM.Open();
+                outCOM.WriteLine(stateData); // Write data to COM-port
+                if (outCOM.IsOpen)
+                    outCOM.Close();
+            } catch { }
 
 
         }
@@ -171,18 +175,16 @@ namespace gnss_bridge
         {
             
             if (slInterval.IsEnabled)
-            {
-                slInterval.IsEnabled = false;
-                btnControl.Content = "Stop Scan";
+            {                                
                 getAccStatus();
                 GetCOM();
             } else
             {
-                outCOM.Close();
                 slInterval.IsEnabled = true;
                 btnControl.Content = "Run Scan";
+                txtLineState.Text = "Getting the status...";
                 myGeolocator.StatusChanged -= getGeo_StatusChange;
-                myGeolocator.PositionChanged -= getGeo_PositionChange;                
+                myGeolocator.PositionChanged -= getGeo_PositionChange;
             }
         }
 
@@ -190,8 +192,9 @@ namespace gnss_bridge
         {
             try { 
                 lblInterval.Text = slInterval.Value.ToString() + " sec";
+                scanInterval = Convert.ToUInt32(slInterval.Value * 1000);
             } catch { }
-            scanInterval = Convert.ToUInt32(slInterval.Value * 1000);
+            
         }
     }
 }
