@@ -8,7 +8,7 @@
 
   <Identity
     Name="92e8b459-3c8b-49f0-9e52-c713e0a664f2"
-    Publisher="CN=SCADL"
+    Publisher="CN=SCAD"
     Version="1.0.10.0" />
 
   <mp:PhoneIdentity PhoneProductId="92e8b459-3c8b-49f0-9e52-c713e0a664f2" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
